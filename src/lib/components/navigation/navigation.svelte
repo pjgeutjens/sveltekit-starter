@@ -26,6 +26,7 @@
 	let initials: string = '';
 	$: {
 		if (user) {
+			console.log('user: ', user);
 			initials = convertNameToInitials(user.firstName, user.lastName);
 		}
 	}
@@ -38,16 +39,30 @@
 				><Logo size="24"></Logo><span class="inline-block font-bold">{APP_NAME}</span></a
 			>
 			<nav class="flex gap-6">
+				<!-- public accessible links -->
 				<a
 					class="flex items-center text-sm font-medium text-muted-foreground"
 					href="/"
 					class:active={'/' === currentPage}>Home</a
 				>
+
+				<!-- protected page links -->
+				{#if user}
 				<a
 					class="flex items-center text-sm font-medium text-muted-foreground"
 					href="/dashboard"
 					class:active={'/dashboard' === currentPage}>Protected</a
-				>
+					>
+				{/if}
+
+				<!-- admin page links -->
+				{#if user?.role.includes('ADMIN')}
+					<a
+						class="flex items-center text-sm font-medium text-muted-foreground"
+						href="/admin"
+						class:active={'/admin' === currentPage}>Admin</a
+					>
+				{/if}
 			</nav>
 		</div>
 		<div class="flex flex-1 items-center justify-end space-x-4">
