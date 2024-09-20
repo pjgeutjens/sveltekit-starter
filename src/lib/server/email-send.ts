@@ -5,7 +5,12 @@ import {
 	AWS_ACCESS_KEY_ID,
 	AWS_SECRET_ACCESS_KEY,
 	AWS_REGION,
-	AWS_API_VERSION
+	AWS_API_VERSION,
+	SMTP_HOST,
+	SMTP_PORT,
+	SMTP_SECURE,
+	SMTP_USER,
+	SMTP_PASS
 } from '$env/static/private';
 //import { z } from "zod";
 export default async function sendEmail(
@@ -15,24 +20,40 @@ export default async function sendEmail(
 	bodyText?: string
 ) {
 	const hasAccessKeys = AWS_ACCESS_KEY_ID && AWS_SECRET_ACCESS_KEY;
+	let transporter: Transporter;
 
-	const ses = new aws.SES({
-		apiVersion: AWS_API_VERSION,
-		region: AWS_REGION,
-		...(hasAccessKeys
-			? {
-					credentials: {
-						accessKeyId: AWS_ACCESS_KEY_ID || '',
-						secretAccessKey: AWS_SECRET_ACCESS_KEY || ''
+	if (hasAccessKeys) {
+		const ses = new aws.SES({
+			apiVersion: AWS_API_VERSION,
+			region: AWS_REGION,
+			...(hasAccessKeys
+				? {
+						credentials: {
+							accessKeyId: AWS_ACCESS_KEY_ID || '',
+							secretAccessKey: AWS_SECRET_ACCESS_KEY || ''
+						}
 					}
-				}
-			: {})
-	});
+				: {})
+		});
+	
+		// create Nodemailer SES transporter
+		transporter = nodemailer.createTransport({
+			SES: { ses, aws }
+		});
+	} else {
+		transporter = nodemailer.createTransport({
+			// @ts-ignore
+			host: SMTP_HOST,
+			port: Number(SMTP_PORT),
+			secure: Number(SMTP_SECURE) === 1,
+			auth: {
+				user: SMTP_USER,
+				pass: SMTP_PASS
+			}
+		});
+	}
 
-	// create Nodemailer SES transporter
-	const transporter = nodemailer.createTransport({
-		SES: { ses, aws }
-	});
+	
 
 	try {
 		if (!bodyText) {
@@ -58,6 +79,7 @@ export default async function sendEmail(
 					text: bodyText
 				},
 				(err) => {
+					console.log('Error sending email: ', err);
 					if (err) {
 						throw new Error(`Error sending email: ${JSON.stringify(err)}`);
 					}
