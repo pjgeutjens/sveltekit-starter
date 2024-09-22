@@ -22,8 +22,23 @@ export async function GET(event) {
     return json({ trips });
 }
 
-export const POST: RequestHandler = async ({request} ) => {
+export const POST: RequestHandler = async ( event ) => {
+    const user = event.locals.user;
+    if (!user) {
+        return json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { request } = event;
+
     const newTrip: Trip = await request.json();
+    
+    newTrip.id = crypto.randomUUID();
+    newTrip.userId = user.id;
+    newTrip.createdAt = new Date();
+    newTrip.updatedAt = new Date();
+    newTrip.arrivalDate = new Date(newTrip.arrivalDate);
+    newTrip.orderDeadline = new Date(newTrip.orderDeadline);
+
     const trip = await createTrip(newTrip);
     if (!trip) {
         return json({ error: 'Could not create trip' }, { status: 400 });

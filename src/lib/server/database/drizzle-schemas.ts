@@ -45,7 +45,7 @@ export const tripsTable = pgTable('trips', {
 		withTimezone: true,
 		mode: 'date'
 	}).notNull(),
-	endDate: timestamp('end_date', {
+	arrivalDate: timestamp('arrival_date', {
 		withTimezone: true,
 		mode: 'date'
 	}).notNull(),
