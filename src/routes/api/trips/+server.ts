@@ -1,17 +1,9 @@
 import type { Trip } from '$lib/server/database/drizzle-schemas';
 import { createTrip, getTrips, getTripsByUserId } from '$lib/server/database/trips-model';
-import { lucia } from '$lib/server/lucia.js';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export async function GET(event) {
-    const authHeader = event.request.headers.get('Authorization');
-    let sessionId = lucia.readBearerToken(authHeader ?? '');
-    sessionId = event.locals.session?.id || null
-    if (!sessionId) {
-        return json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { user } = await lucia.validateSession(sessionId);
+    const user = event.locals.user;
     if (!user) {
         return json({ error: 'Unauthorized' }, { status: 401 });
     }
