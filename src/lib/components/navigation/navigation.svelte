@@ -26,7 +26,6 @@
 	let initials: string = '';
 	$: {
 		if (user) {
-			console.log('user: ', user);
 			initials = convertNameToInitials(user.firstName, user.lastName);
 		}
 	}

@@ -20,7 +20,7 @@ export default async function sendEmail(
 	bodyText?: string
 ) {
 	const hasAccessKeys = AWS_ACCESS_KEY_ID && AWS_SECRET_ACCESS_KEY;
-	let transporter: Transporter;
+	let transporter: nodemailer.Transporter;
 
 	if (hasAccessKeys) {
 		const ses = new aws.SES({
@@ -42,7 +42,6 @@ export default async function sendEmail(
 		});
 	} else {
 		transporter = nodemailer.createTransport({
-			// @ts-ignore
 			host: SMTP_HOST,
 			port: Number(SMTP_PORT),
 			secure: Number(SMTP_SECURE) === 1,

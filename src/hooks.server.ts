@@ -25,7 +25,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const startTimer = Date.now();
 	event.locals.startTimer = startTimer;
 
-	const sessionId = event.cookies.get(lucia.sessionCookieName);
+	let sessionId
+	sessionId = event.cookies.get(lucia.sessionCookieName);
+	if (!sessionId) {
+		const authHeader = event.request.headers.get('Authorization');
+		sessionId = lucia.readBearerToken(authHeader ?? "");
+	}
 	const { session, user } = sessionId
 		? await lucia.validateSession(sessionId)
 		: { session: null, user: null };
