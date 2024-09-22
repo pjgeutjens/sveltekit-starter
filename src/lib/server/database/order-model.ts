@@ -3,6 +3,15 @@ import db from '$lib/server/database/drizzle';
 import { ordersTable } from '$lib/server/database/drizzle-schemas';
 import type { Order, UpdateOrder } from '$lib/server/database/drizzle-schemas';
 
+export const getOrders = async () => {
+	const orders = await db.select().from(ordersTable);
+	if (orders.length === 0) {
+		return null;
+	} else {
+		return orders;
+	}
+};
+
 export const getOrderByUserEmail = async (email: string) => {
 	const order = await db.select().from(ordersTable).where(eq(ordersTable.userEmail, email));
 	if (order.length === 0) {
