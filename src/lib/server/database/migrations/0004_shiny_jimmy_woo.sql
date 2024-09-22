@@ -1,0 +1,1 @@
+ALTER TABLE "trips" RENAME COLUMN "end_date" TO "arrival_date";
