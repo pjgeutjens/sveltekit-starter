@@ -47,12 +47,20 @@
 
 				<!-- protected page links -->
 				{#if user}
-				<a
+					<a
 					class="flex items-center text-sm font-medium text-muted-foreground"
-					href="/dashboard"
-					class:active={'/dashboard' === currentPage}>Protected</a
+					href="/orders"
+					class:active={'/orders' === currentPage}>Orders</a
 					>
 				{/if}
+
+				{#if user?.role.includes('ADMIN') || user?.role.includes('USER')}
+				<a
+					class="flex items-center text-sm font-medium text-muted-foreground"
+					href="/trips"
+					class:active={'/trips' === currentPage}>Trips</a
+				>
+			{/if}
 
 				<!-- admin page links -->
 				{#if user?.role.includes('ADMIN')}

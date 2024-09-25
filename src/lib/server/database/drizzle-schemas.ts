@@ -65,7 +65,9 @@ export const ordersTable = pgTable('orders', {
 	tripId: text('trip_id')
 		.notNull()
 		.references(() => tripsTable.id),
-	userEmail: text('user_email').notNull(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => userTable.id),
 	productDescription: text('product_description')
 		.notNull(),
 	productPrice: integer('product_price').notNull(),
