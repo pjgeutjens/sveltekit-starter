@@ -1,5 +1,19 @@
 // import { desc } from 'drizzle-orm';
-import { pgTable, text, timestamp, boolean, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, pgEnum, timestamp, boolean, integer } from 'drizzle-orm/pg-core';
+
+
+// order status enum
+
+// received : order was received
+// confirmed : order was confirmed by user and delivery info provided
+// payment_info_sent : payment info was sent to user
+// payment_received : payment was received
+// in_transit : order is in transit to destination
+// arrived : order arrived at destination
+// shipped : order was shipped to user
+// delivered : order was delivered to user
+
+export const orderStatusEnum = pgEnum('status', ['received', 'confirmed', 'payment_info_sent', 'payment_received', 'in_transit', 'arrived',  'shipped', 'delivered']);
 
 export const userTable = pgTable('users', {
 	id: text('id').notNull().primaryKey(),
@@ -72,6 +86,7 @@ export const ordersTable = pgTable('orders', {
 		.notNull(),
 	productPrice: integer('product_price').notNull(),
 	quantity: integer('quantity').notNull(),
+	status: orderStatusEnum('status').notNull().default('received'),
 	createdAt: timestamp('created_at', {
 		withTimezone: true,
 		mode: 'date'

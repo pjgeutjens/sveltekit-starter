@@ -30,6 +30,15 @@ export const getOrdersByUserId = async (userId: string) : Promise<Order[]>  => {
 	}
 };
 
+export const getOrdersByTripId = async (tripId: string): Promise<Order[]>  => {
+	const orders = await db.select().from(ordersTable).where(eq(ordersTable.tripId, tripId));
+	if (orders.length === 0) {
+		return [];
+	} else {
+		return orders;
+	}
+}
+
 export const getOrdersByOrderId = async (tripId: string): Promise<Order[]>  => {
 	const orders = await db.select().from(ordersTable).where(eq(ordersTable.tripId, tripId));
 	if (orders.length === 0) {

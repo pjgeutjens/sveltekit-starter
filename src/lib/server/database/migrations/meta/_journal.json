@@ -43,6 +43,13 @@
       "when": 1727129869646,
       "tag": "0005_petite_omega_sentinel",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1727355146101,
+      "tag": "0006_brief_the_initiative",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,6 @@
 <script>
+	import { unique } from "drizzle-orm/sqlite-core";
+
 	export let data;
 </script>
 
@@ -8,5 +10,7 @@
 		<p>{data.trip?.origin} to {data.trip?.destination} arriving {data.trip?.arrivalDate}</p>
 
 		<p>{data.order.productDescription} - {data.order.productPrice}</p>
+		<p>Quantity: {data.order.quantity}</p>
+		<p>Status: {data.order.status}</p>
 	</div>
 </section>
