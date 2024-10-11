@@ -30,7 +30,7 @@ export const getTripsByUserId = async (userId: string) => {
 	}
 }
 
-export const updateOrder = async (id: string, trip: UpdateTrip) => {
+export const updateTrip = async (id: string, trip: UpdateTrip) => {
 	const result = await db.update(tripsTable).set(trip).where(eq(tripsTable.id, id)).returning();
 	if (result.length === 0) {
 		return [];

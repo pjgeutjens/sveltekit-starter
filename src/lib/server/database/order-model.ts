@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import db from '$lib/server/database/drizzle';
-import { ordersTable } from '$lib/server/database/drizzle-schemas';
-import type { Order, UpdateOrder } from '$lib/server/database/drizzle-schemas';
+import { orderItemsTable, ordersTable } from '$lib/server/database/drizzle-schemas';
+import type { Order, OrderItem, UpdateOrder, UpdateOrderItem } from '$lib/server/database/drizzle-schemas';
 
 export const getOrders = async () => {
 	const orders = await db.select().from(ordersTable);
@@ -21,8 +21,8 @@ export const getOrderById = async (id: string) => {
 	}
 }
 
-export const getOrdersByUserId = async (userId: string) : Promise<Order[]>  => {
-	const orders = await db.select().from(ordersTable).where(eq(ordersTable.userId, userId));
+export const getOrdersByUserEmail = async (userEmail: string) : Promise<Order[]>  => {
+	const orders = await db.select().from(ordersTable).where(eq(ordersTable.userEmail, userEmail));
 	if (orders.length === 0) {
 		return [];
 	} else {
@@ -38,15 +38,6 @@ export const getOrdersByTripId = async (tripId: string): Promise<Order[]>  => {
 		return orders;
 	}
 }
-
-export const getOrdersByOrderId = async (tripId: string): Promise<Order[]>  => {
-	const orders = await db.select().from(ordersTable).where(eq(ordersTable.tripId, tripId));
-	if (orders.length === 0) {
-		return [];
-	} else {
-		return orders;
-	}
-};
 
 
 export const updateOrder = async (id: string, order: UpdateOrder) => {
@@ -69,3 +60,13 @@ export const createOrder = async (order: Order) => {
 		return result[0];
 	}
 };
+
+export const createOrderItem = async (orderId: string, orderItem: UpdateOrderItem) => {
+	const fullOrderItem = {orderId: orderId, ...orderItem} as OrderItem
+	const result = await db.insert(orderItemsTable).values(fullOrderItem).onConflictDoNothing().returning();
+	if (result.length === 0) {
+		return null;
+	} else {
+		return result[0];
+	}
+}

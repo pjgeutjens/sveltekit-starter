@@ -102,13 +102,12 @@ export const ordersTable = pgTable('orders', {
 	tripId: text('trip_id')
 		.notNull()
 		.references(() => tripsTable.id),
-	userId: text('user_id')
-		.notNull()
-		.references(() => userTable.id),
-	productDescription: text('product_description').notNull(),
-	productPrice: integer('product_price').notNull(),
-	quantity: integer('quantity').notNull(),
+	userEmail: text('user_email')
+		.notNull().references(() => userTable.email),
 	status: orderStatusEnum('status').notNull().default('received'),
+	currency: text('currency').notNull(),
+	totalPrice: integer('total_price').notNull(),
+	pctCod: integer('pct_cod').notNull().default(0),
 	createdAt: timestamp('created_at', {
 		withTimezone: true,
 		mode: 'date'
@@ -119,6 +118,17 @@ export const ordersTable = pgTable('orders', {
 	}).notNull()
 });
 
+export const orderItemsTable = pgTable('order_items', {
+	orderId: text('order_id')
+		.notNull()
+		.references(() => ordersTable.id),
+	description: text('description').notNull(),
+	currency: text('currency').notNull(),
+	quantity: integer('quantity').notNull().default(1),
+	unitPrice: integer('unit_price').notNull(),
+	
+})
+
 export type User = typeof userTable.$inferInsert;
 export type UpdateUser = Partial<typeof userTable.$inferInsert>;
 export type Session = typeof sessionTable.$inferInsert;
@@ -126,3 +136,5 @@ export type Trip = typeof tripsTable.$inferInsert;
 export type UpdateTrip = Partial<typeof tripsTable.$inferInsert>;
 export type Order = typeof ordersTable.$inferInsert;
 export type UpdateOrder = Partial<typeof ordersTable.$inferInsert>;
+export type OrderItem = typeof orderItemsTable.$inferInsert;
+export type UpdateOrderItem = Partial<typeof orderItemsTable.$inferInsert>;

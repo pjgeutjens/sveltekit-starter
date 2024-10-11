@@ -54,13 +54,6 @@
 					>
 				{/if}
 
-				{#if user?.role.includes('ADMIN') || user?.role.includes('USER')}
-				<a
-					class="flex items-center text-sm font-medium text-muted-foreground"
-					href="/trips"
-					class:active={'/trips' === currentPage}>Trips</a
-				>
-			{/if}
 
 				<!-- admin page links -->
 				{#if user?.role.includes('ADMIN')}
@@ -69,7 +62,13 @@
 						href="/admin"
 						class:active={'/admin' === currentPage}>Admin</a
 					>
+					<a
+					class="flex items-center text-sm font-medium text-muted-foreground"
+					href="/trips"
+					class:active={'/trips' === currentPage}>Trips</a
+					>
 				{/if}
+				
 			</nav>
 		</div>
 		<div class="flex flex-1 items-center justify-end space-x-4">
