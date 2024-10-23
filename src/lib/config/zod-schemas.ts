@@ -96,8 +96,21 @@ export const userUpdatePasswordSchema = userSchema
 		currency: z
 		.string({ required_error: 'Currency is required' })
 		.min(1, { message: 'Currency is required' }),
-		codPct: z.number().gte(0).lte(100)
+		codPct: z.array(z.number().gte(0).lte(100))
+	})
+
+	export const orderCreateSchema = z.object({
+		tripId: z
+		.string({ required_error: 'Trip ID is required' })
+		.min(1, { message: 'Trip ID is required' }),
+		userEmail: z.string().email().min(5),
+		items: z.array(orderItemSchema),
+		currency: z
+		.string({ required_error: 'Currency is required' })
+		.min(1, { message: 'Currency is required' }),
+		codPct: z.array(z.number().gte(0).lte(100))
 	})
 
 	export type OrderSchema = typeof orderSchema;
+	export type OrderCreateSchema = typeof orderCreateSchema;
 

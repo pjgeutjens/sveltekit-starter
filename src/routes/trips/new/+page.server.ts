@@ -17,6 +17,7 @@ export const load = async (event) => {
 export const actions: Actions = {
   default: async (event) => {
     const form = await superValidate(event, tripSchema);
+    console.log("hi")
 
     if (!form.valid) {
       return fail(400, {

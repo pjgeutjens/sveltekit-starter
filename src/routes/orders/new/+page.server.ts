@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate, message } from 'sveltekit-superforms/server';
 import { setFlash } from 'sveltekit-flash-message/server';
 import type { Actions } from "@sveltejs/kit";
-import { orderSchema } from '$lib/config/zod-schemas.js';
+import { orderCreateSchema, orderSchema } from '$lib/config/zod-schemas.js';
 import { createOrder, createOrderItem } from '$lib/server/database/order-model.js';
 import type { Order, Trip } from '$lib/server/database/drizzle-schemas.js';
 import { getTripsByUserId } from '$lib/server/database/trips-model.js';
@@ -11,6 +11,8 @@ import { getTripsByUserId } from '$lib/server/database/trips-model.js';
 
 export const load = async (event) => {
   const user = event.locals.user;
+  const form = await superValidate(event, orderSchema)
+  console.log(JSON.stringify(form))
   let trips: Trip[] = [];
   if (!user) {
     redirect(302, '/auth/sign-in');
@@ -20,15 +22,18 @@ export const load = async (event) => {
   trips = await getTripsByUserId(user.id)
 
   return {
-    form: await superValidate(event, orderSchema),
+    form,
     trips
   };
 };
 
 export const actions: Actions = {
   default: async (event) => {
-    const form = await superValidate(event, orderSchema);
+    console.log("hi")
+    const form = await superValidate(event, orderCreateSchema);
+    console.log("hi",form.data.tripId)
 
+    
     if (!form.valid) {
       return fail(400, {
         form,
@@ -43,12 +48,13 @@ export const actions: Actions = {
           id: crypto.randomUUID(),
           tripId: form.data.tripId,
           userEmail: form.data.userEmail,
+          pctCod: form.data.codPct[0],
           currency: form.data.currency,
           totalPrice: 0,
           createdAt: new Date(),
           updatedAt: new Date()
         })
-        if (order) {
+        if (order && form.data.items.length > 0) {
           form.data.items.forEach(async (orderItem) => {
             await createOrderItem(order.id, {
               currency: orderItem.currency,

@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import { getOrders, getOrdersByTripId, getOrdersByUserId } from '$lib/server/database/order-model';
+import { getOrders, getOrdersByTripId, getOrdersByUserEmail } from '$lib/server/database/order-model';
 import { getTripsByUserId } from '$lib/server/database/trips-model.js';
 import type { Order } from '$lib/server/database/drizzle-schemas.js';
 
@@ -12,7 +12,7 @@ export const load = async (event) : Promise<{orders: Order[]}> => {
 
 	// Guests should be able to see their orders only
 	if (user.role === 'GUEST') {
-		orders = await getOrdersByUserId(user.id)
+		orders = await getOrdersByUserEmail(user.email)
 	}
 
 	// Users should be able to see all orders related to their trips

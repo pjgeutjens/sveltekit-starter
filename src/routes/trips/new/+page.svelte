@@ -7,7 +7,6 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import { Loader2 } from 'lucide-svelte';
 	import { AlertCircle } from 'lucide-svelte';
-	import { goto } from '$app/navigation';
 	export let data: any;
 
 	export let form: SuperValidated<TripSchema>;

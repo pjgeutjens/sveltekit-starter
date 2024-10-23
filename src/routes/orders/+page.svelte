@@ -16,7 +16,6 @@
           <p class="text-muted-foreground text-sm">
             You can start as soon as you add an order.
           </p>
-          <Button class="mt-4" href="/orders/new">Add Order</Button>
         </div>
     {:else}
     <div class="flex max-w-[980px] flex-col items-start gap-2">
@@ -27,12 +26,15 @@
             {#each data.orders as order}
                 <li>
                     <a href={`/orders/${order.id}`}>
-                        {order.productDescription}
+                        {order.userEmail}
                     </a>
                 </li>
             {/each}
         </ul>
 	</div>
     {/if}
+    <div class="flex max-w-[980px] flex-col items-start gap-2">
+        <Button class="mt-4" href="/orders/new">Add Order</Button>
+    </div>
 	
 </section>
